@@ -1,0 +1,4 @@
+venv/
+.idea/
+survey_platform/.env
+__pycache__
