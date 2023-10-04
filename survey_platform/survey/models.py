@@ -94,7 +94,7 @@ class Rating(models.Model):
     """Модель для оценки опроса"""
     survey = models.ForeignKey(Survey, on_delete=models.CASCADE, verbose_name='опрос')
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='пользователь', on_delete=models.CASCADE,
-                             **NULLABLE)
+                              **NULLABLE)
     like = models.BooleanField(default=False, verbose_name='лайк')
     dislike = models.BooleanField(default=False, verbose_name='дизлайк')
 
@@ -104,5 +104,3 @@ class Rating(models.Model):
 
     def __str__(self):
         return f'{self.survey} (Лайк: {int(self.like)}, дизлайк: {int(self.dislike)}'
-
-

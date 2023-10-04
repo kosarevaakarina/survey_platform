@@ -1,5 +1,7 @@
 from rest_framework import serializers
 from survey.models import Survey, Question, Choice, Answer, Rating, CheckSurvey
+from survey.sevices.send_email_when_create_survey import SendMessage
+from survey.sevices.send_mail_when_rating_survey import SendMail
 
 
 class ChoiceSerializer(serializers.ModelSerializer):
@@ -14,7 +16,7 @@ class ChoiceSerializer(serializers.ModelSerializer):
         choice = validated_data.get('choice')
         choices = Choice.objects.filter(question=question)
         if choices.count() >= 4:
-            raise serializers.ValidationError(f'Количество ответов на один и тот же вопрос не может быть больше 4!')
+            raise serializers.ValidationError('Количество ответов на один и тот же вопрос не может быть больше 4!')
         if Choice.objects.filter(question=question, choice=choice).exists():
             raise serializers.ValidationError('Такой вариант ответа для этого вопроса уже существует!')
         return super().create(validated_data)
@@ -40,7 +42,7 @@ class QuestionSerializer(serializers.ModelSerializer):
         survey = validated_data.get('survey')
         question = Question.objects.filter(survey=survey)
         if question.count() > 10:
-            raise serializers.ValidationError(f'Количество вопросов в опросе не может быть больше 10!')
+            raise serializers.ValidationError('Количество вопросов в опросе не может быть больше 10!')
         return super().create(validated_data)
 
     def validate(self, attrs):
@@ -74,7 +76,13 @@ class SurveySerializer(serializers.ModelSerializer):
         description = validated_data.get('description')
         if Survey.objects.filter(title=title, description=description).exists():
             raise serializers.ValidationError(f'Опрос {title} с описанием {description} уже существует!')
-        return super().create(validated_data)
+        survey = super().create(validated_data)
+
+        # при создании опроса осуществляется рассылка всем пользователям
+        send_mail = SendMessage(survey.id)
+        send_mail.send_email()
+
+        return survey
 
     def update(self, instance, validated_data):
         """При обновлении опроса проверяется наличие опросов с таким же названием и описанием"""
@@ -167,6 +175,14 @@ class RatingSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Вы уже оценивали этот опрос! Вы можете изменить оценку')
         if like is not None and dislike is not None:
             raise serializers.ValidationError('Нельзя одновременно ставить лайк и дизлайк')
+        if like is None and dislike is None:
+            raise serializers.ValidationError('Необходимо поставить или лайк, или дизлайк')
         return attrs
 
+    def create(self, validated_data):
+        rating = super().create(validated_data)
+        # при создании новой оценки опроса формируется и отправляется сообщение автору опроса
+        send_message = SendMail(rating.id)
+        send_message.send_email()
 
+        return rating

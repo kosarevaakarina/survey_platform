@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from survey.models import Survey, Question, Choice, Answer, CheckSurvey
+from survey.models import Survey, Question, Choice, Answer
 
 
 @admin.register(Survey)
@@ -43,8 +43,3 @@ class AnswerAdmin(admin.ModelAdmin):
         ('Автор', {'fields': ('user',)}),
 
     )
-
-
-# @admin.register(CheckSurvey)
-# class CheckSurveyAdmin(admin.ModelAdmin):
-#     list_display = ('question', 'answer')
