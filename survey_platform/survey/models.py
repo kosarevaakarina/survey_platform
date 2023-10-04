@@ -29,7 +29,6 @@ class Survey(models.Model):
 
 class Question(models.Model):
     """Модель вопроса"""
-    title = models.CharField(max_length=50, verbose_name='название вопроса')
     question = models.TextField(verbose_name='вопрос')
     survey = models.ForeignKey(Survey, on_delete=models.CASCADE, verbose_name='опрос')
     is_published = models.BooleanField(default=True, verbose_name='опубликовано')
@@ -40,7 +39,7 @@ class Question(models.Model):
 
     def __str__(self):
         """Строковое представление модели вопроса"""
-        return self.title
+        return self.question
 
     def delete(self, using=None, keep_parents=False):
         """При удалении вопроса меняется его статус публичности"""
@@ -75,3 +74,16 @@ class Answer(models.Model):
     def __str__(self):
         """Строковое представление модели ответа"""
         return f'{self.answer}'
+
+
+class CheckSurvey(models.Model):
+    """Модель для фиксации просмотра опроса"""
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='пользователь', on_delete=models.CASCADE, **NULLABLE)
+    survey = models.ForeignKey(Survey, verbose_name='опрос', on_delete=models.CASCADE, **NULLABLE)
+
+    class Meta:
+        verbose_name = 'просмотр'
+        verbose_name_plural = 'просмотры'
+
+    def __str__(self):
+        return f'{self.survey} - {self.user}'
