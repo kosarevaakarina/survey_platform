@@ -17,8 +17,8 @@ class ChoiceSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         question = validated_data.get('question')
         choice = validated_data.get('choice')
-        choices = Choice.objects.filter(question=question)
-        if choices.count() >= 4:
+        choice_count = Choice.objects.filter(question=question).count()
+        if choice_count >= 4:
             raise serializers.ValidationError('Количество ответов на один и тот же вопрос не может быть больше 4!')
         if Choice.objects.filter(question=question, choice=choice).exists():
             raise serializers.ValidationError('Такой вариант ответа для этого вопроса уже существует!')
@@ -53,18 +53,12 @@ class QuestionSerializer(serializers.ModelSerializer):
         question_count = Question.objects.filter(survey=survey).count()
         if question_count > 10:
             raise serializers.ValidationError('Количество вопросов в опросе не может быть больше 10!')
+        if Question.objects.filter(survey=survey, question=question).exists():
+            raise serializers.ValidationError(f'Вопрос {question} в этом опросе уже существует!')
 
         logger.info(f"Добавлен вопрос {question} к опросу {survey.title} (ID={survey.pk})")
 
         return super().create(validated_data)
-
-    def validate(self, attrs):
-        """Валидация повторяющихся вопросов в опросе"""
-        survey = attrs.get('survey')
-        question = attrs.get('question')
-        if Question.objects.filter(survey=survey, question=question).exists():
-            raise serializers.ValidationError(f'Вопрос {question} в этом опросе уже существует!')
-        return attrs
 
     def update(self, instance, validated_data):
         """При обновлении вопроса проверяется наличие такого вопроса у этого опроса"""
@@ -196,12 +190,8 @@ class RatingSerializer(serializers.ModelSerializer):
         fields = ('survey', 'owner', 'like', 'dislike')
 
     def validate(self, attrs):
-        owner = attrs.get('owner')
-        survey = attrs.get('survey')
         like = attrs.get('like')
         dislike = attrs.get('dislike')
-        if Rating.objects.filter(owner=owner, survey=survey).exists():
-            raise serializers.ValidationError('Вы уже оценивали этот опрос! Вы можете изменить оценку')
         if like is not None and dislike is not None:
             raise serializers.ValidationError('Нельзя одновременно ставить лайк и дизлайк')
         if like is None and dislike is None:
@@ -210,6 +200,8 @@ class RatingSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         rating = super().create(validated_data)
+        if Rating.objects.filter(owner=rating.owner, survey=rating.survey).exists():
+            raise serializers.ValidationError('Вы уже оценивали этот опрос! Вы можете изменить оценку')
         # при создании новой оценки опроса формируется и отправляется сообщение автору опроса
         send_message = SendMail(rating.id)
         send_message.send_email()

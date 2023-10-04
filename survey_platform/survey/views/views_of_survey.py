@@ -15,7 +15,7 @@ class SurveyListAPIView(ListAPIView):
     queryset = Survey.objects.filter(is_published=True)
     permission_classes = [IsAuthenticated]
     filter_backends = [SearchFilter]
-    ordering_fields = ['title']
+    search_fields = ['title']
 
     def get(self, *args, **kwargs):
         """Сортировка списка опросов по количеству лайков"""
