@@ -15,7 +15,7 @@ class SendMail:
         self.rating = None
 
     def get_user(self):
-        """Возвращает пльзователя-автора опроса"""
+        """Возвращает пользователя-автора опроса"""
         self.rating = Rating.objects.get(pk=self.rating_id)
         user = self.rating.survey.owner
         return user

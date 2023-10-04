@@ -13,6 +13,7 @@ class SendMessage:
     """Сервис по отправке сообщений зарегистрированным пользователям"""
 
     def __init__(self, survey_id: int):
+        """Инициализация класса"""
         self.survey_id = survey_id
 
     @staticmethod

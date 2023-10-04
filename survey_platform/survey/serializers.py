@@ -1,7 +1,10 @@
+import logging
 from rest_framework import serializers
 from survey.models import Survey, Question, Choice, Answer, Rating, CheckSurvey
 from survey.sevices.send_email_when_create_survey import SendMessage
 from survey.sevices.send_mail_when_rating_survey import SendMail
+
+logger = logging.getLogger("base")
 
 
 class ChoiceSerializer(serializers.ModelSerializer):
@@ -19,6 +22,9 @@ class ChoiceSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Количество ответов на один и тот же вопрос не может быть больше 4!')
         if Choice.objects.filter(question=question, choice=choice).exists():
             raise serializers.ValidationError('Такой вариант ответа для этого вопроса уже существует!')
+
+        logger.info(f"Добавлен вариант ответа {choice} к вопросу {question.question} (ID={question.pk})")
+
         return super().create(validated_data)
 
     def update(self, instance, validated_data):
@@ -26,6 +32,9 @@ class ChoiceSerializer(serializers.ModelSerializer):
         choice = validated_data.get('choice') if validated_data.get('choice') is not None else instance.choice
         if Choice.objects.filter(question=question, choice=choice).exists():
             raise serializers.ValidationError('Такой вариант ответа для этого вопроса уже существует!')
+
+        logger.info(f"Обновлен вариант ответа {choice} к вопросу {question.question} (ID={question.pk})")
+
         return super().update(instance, validated_data)
 
 
@@ -40,9 +49,13 @@ class QuestionSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         """При создании вопроса проверяется количество вопросов в данном опросе"""
         survey = validated_data.get('survey')
-        question = Question.objects.filter(survey=survey)
-        if question.count() > 10:
+        question = validated_data.get('question')
+        question_count = Question.objects.filter(survey=survey).count()
+        if question_count > 10:
             raise serializers.ValidationError('Количество вопросов в опросе не может быть больше 10!')
+
+        logger.info(f"Добавлен вопрос {question} к опросу {survey.title} (ID={survey.pk})")
+
         return super().create(validated_data)
 
     def validate(self, attrs):
@@ -59,6 +72,9 @@ class QuestionSerializer(serializers.ModelSerializer):
         question = validated_data.get('question') if validated_data.get('question') is not None else instance.question
         if Question.objects.filter(survey=survey, question=question).exists():
             raise serializers.ValidationError(f'Вопрос {question} в этом опросе уже существует!')
+
+        logger.info(f"Обновлен вопрос {question} к опросу {survey.title} (ID={survey.pk})")
+
         return super().update(instance, validated_data)
 
 
@@ -82,6 +98,8 @@ class SurveySerializer(serializers.ModelSerializer):
         send_mail = SendMessage(survey.id)
         send_mail.send_email()
 
+        logger.info(f"Добавлен опрос {title}")
+
         return survey
 
     def update(self, instance, validated_data):
@@ -91,6 +109,9 @@ class SurveySerializer(serializers.ModelSerializer):
             'description') is not None else instance.description
         if Survey.objects.filter(title=title, description=description).exists():
             raise serializers.ValidationError(f'Опрос {title} с описанием {description} уже существует!')
+
+        logger.info(f"Обновлен опрос {title} (ID={instance.pk})")
+
         return super().update(instance, validated_data)
 
 
@@ -132,14 +153,22 @@ class AnswerSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         question = validated_data.get('question')
+        answer = validated_data.get('answer')
         if Answer.objects.filter(question=question).exists():
             raise serializers.ValidationError('Ответ на этот вопрос уже существует! Вы можете его изменить')
+
+        logger.info(f"Добавлен ответ {answer.choice} к вопросу {question.question} (ID={question.pk})")
+
         return super().create(validated_data)
 
     def update(self, instance, validated_data):
         question = validated_data.get('question') if validated_data.get('question') is not None else instance.question
+        answer = validated_data.get('answer') if validated_data.get('answer') is not None else instance.answer
         if Answer.objects.filter(question=question).exists():
             raise serializers.ValidationError('Ответ на этот вопрос уже существует! Вы можете его изменить')
+
+        logger.info(f"Обновлен ответ {answer.choice} к вопросу {question.question} (ID={question.pk})")
+
         return super().update(instance, validated_data)
 
 
@@ -184,5 +213,7 @@ class RatingSerializer(serializers.ModelSerializer):
         # при создании новой оценки опроса формируется и отправляется сообщение автору опроса
         send_message = SendMail(rating.id)
         send_message.send_email()
+
+        logger.info(f"Пользователь {rating.owner} поставил оценку вопросу {rating.survey.title}")
 
         return rating

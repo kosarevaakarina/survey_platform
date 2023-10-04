@@ -1,7 +1,10 @@
+import logging
 from django.conf import settings
 from django.db import models
 
 from users.models import NULLABLE
+
+logger = logging.getLogger("base")
 
 
 class Survey(models.Model):
@@ -25,6 +28,7 @@ class Survey(models.Model):
         """При удалении опроса меняется его статус публичности"""
         self.is_published = False
         self.save()
+        logger.info(f"Опрос {self.pk} удален")
 
 
 class Question(models.Model):
@@ -45,6 +49,8 @@ class Question(models.Model):
         """При удалении вопроса меняется его статус публичности"""
         self.is_published = False
         self.save()
+
+        logger.info(f"Вопрос {self.pk} удален")
 
 
 class Choice(models.Model):
