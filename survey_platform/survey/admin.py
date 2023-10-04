@@ -45,6 +45,6 @@ class AnswerAdmin(admin.ModelAdmin):
     )
 
 
-@admin.register(CheckSurvey)
-class CheckSurveyAdmin(admin.ModelAdmin):
-    list_display = ('question', 'answer')
+# @admin.register(CheckSurvey)
+# class CheckSurveyAdmin(admin.ModelAdmin):
+#     list_display = ('question', 'answer')

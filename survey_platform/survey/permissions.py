@@ -1,7 +1,7 @@
 from rest_framework import permissions
 
 
-class IsSurveyOwner (permissions.BasePermission):
+class IsOwner (permissions.BasePermission):
     """Пользователь может изменять и удалять только свой опрос"""
     def has_permission(self, request, view):
         return request.user == view.get_object().owner

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from survey.models import Survey, Question, Choice, Answer
+from survey.models import Survey, Question, Choice, Answer, Rating, CheckSurvey
 
 
 class ChoiceSerializer(serializers.ModelSerializer):
@@ -88,14 +88,36 @@ class SurveySerializer(serializers.ModelSerializer):
 
 class SurveyListSerializer(serializers.ModelSerializer):
     """Сериализатор для просмотра списка опросов"""
+    num_of_views = serializers.SerializerMethodField()
+    like = serializers.SerializerMethodField()
+    dislike = serializers.SerializerMethodField()
 
     class Meta:
         model = Survey
-        fields = ('title', 'description', 'owner')
+        fields = ('title', 'description', 'owner', 'num_of_views', 'like', 'dislike')
+
+    @staticmethod
+    def get_num_of_views(obj):
+        """Расчет количества просмотров опроса"""
+        check_survey = CheckSurvey.objects.filter(survey=obj).count()
+        return check_survey
+
+    @staticmethod
+    def get_like(obj):
+        """Расчет количества лайков"""
+        like = Rating.objects.filter(survey=obj, like=1).count()
+        return like
+
+    @staticmethod
+    def get_dislike(obj):
+        """Расчет количества дизлайков"""
+        dislike = Rating.objects.filter(survey=obj, dislike=1).count()
+        return dislike
 
 
 class AnswerSerializer(serializers.ModelSerializer):
     """Сериализатор для представления ответов на вопросы"""
+
     class Meta:
         model = Answer
         fields = ('question', 'answer')
@@ -129,3 +151,22 @@ class SurveyAndAnswerQuestion(serializers.ModelSerializer):
     class Meta:
         model = Survey
         fields = ('title', 'description', 'owner', 'question_and_answer')
+
+
+class RatingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Rating
+        fields = ('survey', 'owner', 'like', 'dislike')
+
+    def validate(self, attrs):
+        owner = attrs.get('owner')
+        survey = attrs.get('survey')
+        like = attrs.get('like')
+        dislike = attrs.get('dislike')
+        if Rating.objects.filter(owner=owner, survey=survey).exists():
+            raise serializers.ValidationError('Вы уже оценивали этот опрос! Вы можете изменить оценку')
+        if like is not None and dislike is not None:
+            raise serializers.ValidationError('Нельзя одновременно ставить лайк и дизлайк')
+        return attrs
+
+

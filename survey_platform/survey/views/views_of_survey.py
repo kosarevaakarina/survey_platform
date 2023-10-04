@@ -1,7 +1,9 @@
 from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveAPIView, UpdateAPIView, DestroyAPIView
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+
 from survey.models import Survey, CheckSurvey
-from survey.permissions import IsSurveyOwner
+from survey.permissions import IsOwner
 from survey.serializers import SurveySerializer, SurveyListSerializer, SurveyAndAnswerQuestion
 
 
@@ -11,6 +13,12 @@ class SurveyListAPIView(ListAPIView):
     serializer_class = SurveyListSerializer
     queryset = Survey.objects.filter(is_published=True)
     permission_classes = [IsAuthenticated]
+
+    def get(self, *args, **kwargs):
+        """Сортировка списка опросов по количеству лайков"""
+        data = self.serializer_class(self.get_queryset(), many=True).data
+        data = sorted(data, key=lambda x: -x['like'])
+        return Response(data)
 
 
 class SurveyRetrieveAPIView(RetrieveAPIView):
@@ -45,7 +53,7 @@ class SurveyUpdateAPIView(UpdateAPIView):
     serializer_class = SurveySerializer
     queryset = Survey.objects.filter(is_published=True)
 
-    permission_classes = [IsSurveyOwner]
+    permission_classes = [IsOwner]
 
 
 class SurveyDestroyAPIView(DestroyAPIView):
@@ -53,7 +61,7 @@ class SurveyDestroyAPIView(DestroyAPIView):
     model = Survey
     serializer_class = SurveySerializer
     queryset = Survey.objects.filter(is_published=True)
-    permission_classes = [IsSurveyOwner]
+    permission_classes = [IsOwner]
 
 
 class SurveyAndAnswerRetrieveAPIView(RetrieveAPIView):
