@@ -16,7 +16,9 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('email', 'first_name', 'last_name', 'is_active')
 
     def update(self, instance, validated_data):
+
         logger.info(f"Пользователь {instance.email} (ID={instance.pk}) обновил информацию")
+
         super().update(instance, validated_data)
         return instance
 
@@ -48,7 +50,9 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         password = self.validated_data.get('password')
         user.set_password(password)
         user.save()
-        logger.info(f"Пользователь {self.validated_data['email']} зарегистрировался")
+
+        logger.info(f"Пользователь {self.validated_data['email']} зарегистрирован")
+
         return user
 
 
