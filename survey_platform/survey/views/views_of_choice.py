@@ -1,33 +1,36 @@
-from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveAPIView, UpdateAPIView, DestroyAPIView
-
+from rest_framework.generics import CreateAPIView, RetrieveAPIView, UpdateAPIView, DestroyAPIView
+from rest_framework.permissions import IsAuthenticated
 from survey.models import Choice
+from survey.permissions import IsChoiceOwner
 from survey.serializers import ChoiceSerializer
 
 
-class ChoiceListAPIView(ListAPIView):
-    model = Choice
-    serializer_class = ChoiceSerializer
-    queryset = Choice.objects.all()
-
-
 class ChoiceRetrieveAPIView(RetrieveAPIView):
+    """Представление для просмотра одного варианта ответа"""
     model = Choice
     serializer_class = ChoiceSerializer
     queryset = Choice.objects.all()
+    permission_classes = [IsAuthenticated]
 
 
 class ChoiceCreateAPIView(CreateAPIView):
+    """Представление для создания варината ответа"""
     model = Choice
     serializer_class = ChoiceSerializer
+    permission_classes = [IsAuthenticated]
 
 
 class ChoiceUpdateAPIView(UpdateAPIView):
+    """Представление для обновления варианта ответа"""
     model = Choice
     serializer_class = ChoiceSerializer
     queryset = Choice.objects.all()
+    permission_classes = [IsChoiceOwner]
 
 
 class ChoiceDestroyAPIView(DestroyAPIView):
+    """Представление для удаления варианта ответа"""
     model = Choice
     serializer_class = ChoiceSerializer
     queryset = Choice.objects.all()
+    permission_classes = [IsChoiceOwner]
