@@ -1,5 +1,8 @@
 import logging
 from rest_framework import serializers
+
+from survey.models import CheckSurvey
+from survey.serializers import SurveyListSerializer, RatingSerializer
 from users.models import User
 
 logger = logging.getLogger("base")
@@ -7,6 +10,7 @@ logger = logging.getLogger("base")
 
 class UserSerializer(serializers.ModelSerializer):
     """Сериализатор для пользователя"""
+
     class Meta:
         model = User
         fields = ('email', 'first_name', 'last_name', 'is_active')
@@ -46,3 +50,33 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         user.save()
         logger.info(f"Пользователь {self.validated_data['email']} зарегистрировался")
         return user
+
+
+class UserCreateSurveySerializer(serializers.ModelSerializer):
+    survey = SurveyListSerializer(many=True, read_only=True, source='survey_set')
+
+    class Meta:
+        model = User
+        fields = ('email', 'survey')
+
+
+class UserCreateRatingSerializer(serializers.ModelSerializer):
+    rating = RatingSerializer(many=True, read_only=True, source='rating_set')
+
+    class Meta:
+        model = User
+        fields = ('email', 'rating')
+
+
+class CheckSurveySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CheckSurvey
+        fields = ('id', 'survey')
+
+
+class UserCheckSurveySerializer(serializers.ModelSerializer):
+    check = CheckSurveySerializer(many=True, read_only=True, source='checksurvey_set')
+
+    class Meta:
+        model = User
+        fields = ('email', 'check')
