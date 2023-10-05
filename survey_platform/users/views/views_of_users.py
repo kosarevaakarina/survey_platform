@@ -44,26 +44,3 @@ class UserDestroyAPIView(DestroyAPIView):
     queryset = User.objects.all()
     permission_classes = [IsUser]
 
-
-class UserCreateSurveyRetrieveAPIView(RetrieveAPIView):
-    """Представление для просмотра созданных пользователем опросов"""
-    model = User
-    serializer_class = UserCreateSurveySerializer
-    permission_classes = [IsUser]
-    queryset = User.objects.all()
-
-
-class UserCreateRatingRetrieveAPIView(RetrieveAPIView):
-    """Представление для просмотра проставленных оценок опросам"""
-    model = User
-    serializer_class = UserCreateRatingSerializer
-    permission_classes = [IsUser]
-    queryset = User.objects.all()
-
-
-class UserCheckSurveyRetrieveAPIView(RetrieveAPIView):
-    """Представление для списка просмотренных пользователем опросов"""
-    model = User
-    serializer_class = UserCheckSurveySerializer
-    permission_classes = [IsUser]
-    queryset = User.objects.all()

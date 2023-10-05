@@ -45,18 +45,12 @@ class Question(models.Model):
         """Строковое представление модели вопроса"""
         return self.question
 
-    def delete(self, using=None, keep_parents=False):
-        """При удалении вопроса меняется его статус публичности"""
-        self.is_published = False
-        self.save()
-
-        logger.info(f"Вопрос {self.pk} удален")
-
 
 class Choice(models.Model):
     """Модель варианта ответа"""
     question = models.ForeignKey(Question, on_delete=models.CASCADE, verbose_name='вопрос')
     choice = models.CharField(max_length=300, verbose_name='ответ')
+    points = models.BooleanField(default=False, verbose_name='правильность ответа')
 
     class Meta:
         verbose_name = 'вариант ответа'

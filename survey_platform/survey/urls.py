@@ -18,6 +18,7 @@ urlpatterns = [
     path('create/', SurveyCreateAPIView.as_view(), name='survey_create'),
     path('update/<int:pk>/', SurveyUpdateAPIView.as_view(), name='survey_update'),
     path('delete/<int:pk>/', SurveyDestroyAPIView.as_view(), name='survey_delete'),
+    path('survey/answer/<int:pk>/', SurveyAndAnswerRetrieveAPIView.as_view(), name='survey_answer'),
 
     # question
     path('question/<int:pk>/', QuestionRetrieveAPIView.as_view(), name='question_detail'),
@@ -34,6 +35,7 @@ urlpatterns = [
     # answer
     path('answer/create/', AnswerCreateAPIView.as_view(), name='answer_create'),
     path('answer/update/<int:pk>/', AnswerUpdateAPIView.as_view(), name='answer_update'),
-    path('survey/answer/<int:pk>/', SurveyAndAnswerRetrieveAPIView.as_view(), name='survey_answer'),
+
+    # rating
     path('rating/create/', RatingCreateAPIView.as_view(), name='rating_create'),
 ]
