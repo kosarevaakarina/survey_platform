@@ -78,7 +78,8 @@ class Answer(models.Model):
 
 class CheckSurvey(models.Model):
     """Модель для фиксации просмотра опроса"""
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='пользователь', on_delete=models.CASCADE, **NULLABLE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='пользователь', on_delete=models.CASCADE,
+                             **NULLABLE)
     survey = models.ForeignKey(Survey, verbose_name='опрос', on_delete=models.CASCADE, **NULLABLE)
 
     class Meta:
@@ -87,3 +88,21 @@ class CheckSurvey(models.Model):
 
     def __str__(self):
         return f'{self.survey} - {self.user}'
+
+
+class Rating(models.Model):
+    """Модель для оценки опроса"""
+    survey = models.ForeignKey(Survey, on_delete=models.CASCADE, verbose_name='опрос')
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='пользователь', on_delete=models.CASCADE,
+                             **NULLABLE)
+    like = models.BooleanField(default=False, verbose_name='лайк')
+    dislike = models.BooleanField(default=False, verbose_name='дизлайк')
+
+    class Meta:
+        verbose_name = 'оценка'
+        verbose_name_plural = 'оценки'
+
+    def __str__(self):
+        return f'{self.survey} (Лайк: {int(self.like)}, дизлайк: {int(self.dislike)}'
+
+
