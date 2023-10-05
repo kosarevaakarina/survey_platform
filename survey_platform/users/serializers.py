@@ -1,5 +1,8 @@
 import logging
 from rest_framework import serializers
+
+from survey.models import CheckSurvey
+from survey.serializers import SurveyListSerializer, RatingSerializer
 from users.models import User
 
 logger = logging.getLogger("base")
@@ -7,12 +10,15 @@ logger = logging.getLogger("base")
 
 class UserSerializer(serializers.ModelSerializer):
     """Сериализатор для пользователя"""
+
     class Meta:
         model = User
         fields = ('email', 'first_name', 'last_name', 'is_active')
 
     def update(self, instance, validated_data):
+
         logger.info(f"Пользователь {instance.email} (ID={instance.pk}) обновил информацию")
+
         super().update(instance, validated_data)
         return instance
 
@@ -44,5 +50,37 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         password = self.validated_data.get('password')
         user.set_password(password)
         user.save()
-        logger.info(f"Пользователь {self.validated_data['email']} зарегистрировался")
+
+        logger.info(f"Пользователь {self.validated_data['email']} зарегистрирован")
+
         return user
+
+
+class UserCreateSurveySerializer(serializers.ModelSerializer):
+    survey = SurveyListSerializer(many=True, read_only=True, source='survey_set')
+
+    class Meta:
+        model = User
+        fields = ('email', 'survey')
+
+
+class UserCreateRatingSerializer(serializers.ModelSerializer):
+    rating = RatingSerializer(many=True, read_only=True, source='rating_set')
+
+    class Meta:
+        model = User
+        fields = ('email', 'rating')
+
+
+class CheckSurveySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CheckSurvey
+        fields = ('id', 'survey')
+
+
+class UserCheckSurveySerializer(serializers.ModelSerializer):
+    check = CheckSurveySerializer(many=True, read_only=True, source='checksurvey_set')
+
+    class Meta:
+        model = User
+        fields = ('email', 'check')

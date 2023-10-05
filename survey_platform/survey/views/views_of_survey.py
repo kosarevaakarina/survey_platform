@@ -1,3 +1,4 @@
+from rest_framework.filters import SearchFilter
 from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveAPIView, UpdateAPIView, DestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -13,6 +14,8 @@ class SurveyListAPIView(ListAPIView):
     serializer_class = SurveyListSerializer
     queryset = Survey.objects.filter(is_published=True)
     permission_classes = [IsAuthenticated]
+    filter_backends = [SearchFilter]
+    search_fields = ['title']
 
     def get(self, *args, **kwargs):
         """Сортировка списка опросов по количеству лайков"""

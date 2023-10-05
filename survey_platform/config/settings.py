@@ -27,6 +27,8 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'drf_yasg',
+    'django_filters',
+    'rest_framework_simplejwt',
 
     'oauth2_provider',
     'social_django',
@@ -126,6 +128,7 @@ AUTH_USER_MODEL = 'users.User'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
         'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
         'drf_social_oauth2.authentication.SocialAuthentication',
     ),
@@ -144,7 +147,6 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
     'https://www.googleapis.com/auth/userinfo.email',
     'https://www.googleapis.com/auth/userinfo.profile',
 ]
-
 
 LOGGING = {
     'version': 1,
@@ -175,3 +177,11 @@ LOGGING = {
         },
     }
 }
+
+# Email settings
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True

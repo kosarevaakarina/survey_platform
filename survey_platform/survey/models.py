@@ -1,7 +1,10 @@
+import logging
 from django.conf import settings
 from django.db import models
 
 from users.models import NULLABLE
+
+logger = logging.getLogger("base")
 
 
 class Survey(models.Model):
@@ -25,6 +28,7 @@ class Survey(models.Model):
         """При удалении опроса меняется его статус публичности"""
         self.is_published = False
         self.save()
+        logger.info(f"Опрос {self.pk} удален")
 
 
 class Question(models.Model):
@@ -41,16 +45,12 @@ class Question(models.Model):
         """Строковое представление модели вопроса"""
         return self.question
 
-    def delete(self, using=None, keep_parents=False):
-        """При удалении вопроса меняется его статус публичности"""
-        self.is_published = False
-        self.save()
-
 
 class Choice(models.Model):
     """Модель варианта ответа"""
     question = models.ForeignKey(Question, on_delete=models.CASCADE, verbose_name='вопрос')
     choice = models.CharField(max_length=300, verbose_name='ответ')
+    points = models.BooleanField(default=False, verbose_name='правильность ответа')
 
     class Meta:
         verbose_name = 'вариант ответа'
@@ -94,7 +94,7 @@ class Rating(models.Model):
     """Модель для оценки опроса"""
     survey = models.ForeignKey(Survey, on_delete=models.CASCADE, verbose_name='опрос')
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='пользователь', on_delete=models.CASCADE,
-                             **NULLABLE)
+                              **NULLABLE)
     like = models.BooleanField(default=False, verbose_name='лайк')
     dislike = models.BooleanField(default=False, verbose_name='дизлайк')
 
@@ -104,5 +104,3 @@ class Rating(models.Model):
 
     def __str__(self):
         return f'{self.survey} (Лайк: {int(self.like)}, дизлайк: {int(self.dislike)}'
-
-

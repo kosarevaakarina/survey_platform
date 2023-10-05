@@ -21,4 +21,3 @@ class AnswerUpdateAPIView(UpdateAPIView):
     serializer_class = AnswerSerializer
     permission_classes = [IsAuthenticated]
     queryset = Answer.objects.all()
-
