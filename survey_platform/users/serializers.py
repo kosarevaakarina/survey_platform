@@ -57,6 +57,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
 
 class UserCreateSurveySerializer(serializers.ModelSerializer):
+    """Сериализатор для просмотра созданных пользователем опросов"""
     survey = SurveyListSerializer(many=True, read_only=True, source='survey_set')
 
     class Meta:
@@ -65,6 +66,7 @@ class UserCreateSurveySerializer(serializers.ModelSerializer):
 
 
 class UserCreateRatingSerializer(serializers.ModelSerializer):
+    """Представление для просмотра проставленных оценок пользователем опросам"""
     rating = RatingSerializer(many=True, read_only=True, source='rating_set')
 
     class Meta:
@@ -79,6 +81,7 @@ class CheckSurveySerializer(serializers.ModelSerializer):
 
 
 class UserCheckSurveySerializer(serializers.ModelSerializer):
+    """Сериализатор для списка просмотренных пользователем опросов"""
     check = CheckSurveySerializer(many=True, read_only=True, source='checksurvey_set')
 
     class Meta:

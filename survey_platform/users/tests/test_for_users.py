@@ -84,7 +84,6 @@ class UserUpdateAPITestCase(UserCreate):
             'is_active': True})
 
 
-
 class UserDestroyAPITestCase(UserCreate):
     """Тестирование удаления пользователя"""
 

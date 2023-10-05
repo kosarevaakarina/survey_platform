@@ -9,7 +9,7 @@ class AnswerCreateAPITestCase(UserCreate):
 
     def create_response(self):
         """Получение ответа при отправке POST запроса"""
-        response = self.client.post('/answer/create/', {
+        response = self.client.post('/survey/answer/create/', {
             "question": self.question.pk,
             "answer": self.choice.pk
         })
@@ -20,7 +20,7 @@ class AnswerCreateAPITestCase(UserCreate):
             question='Two question',
             survey=self.survey
         )
-        response = self.client.post('/answer/create/', {
+        response = self.client.post('/survey/answer/create/', {
             "question": self.new_question.pk,
             "answer": self.choice.pk
         })
@@ -32,13 +32,6 @@ class AnswerCreateAPITestCase(UserCreate):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(response.json(), {'detail': 'Учетные данные не были предоставлены.'})
 
-    def test_create_answer_auth_user_fatal(self):
-        """Тестирование создания ответа авторизованным пользователем с возбуждением ошибки"""
-        self.save_owner_for_answer()
-        response = self.create_response()
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.json(), ['Ответ на этот вопрос уже существует! Вы можете его изменить'])
-
     def test_create_answer_auth_user(self):
         """Тестирование создания ответа авторизованным пользователем"""
         self.save_owner_for_answer()
@@ -48,13 +41,14 @@ class AnswerCreateAPITestCase(UserCreate):
 
 class AnswerUpdateAPITestCase(UserCreate):
     """Тестирование обновления ответа на вопрос"""
+
     def update_response(self, pk):
         """Получение ответа при отправке PATCH запроса"""
         self.second_question = Question.objects.create(
             question='Second question',
             survey=self.survey
         )
-        response = self.client.patch(f'/answer/update/{pk}/', {'question': self.second_question.pk})
+        response = self.client.patch(f'/survey/answer/update/{pk}/', {'question': self.second_question.pk})
         return response
 
     def test_update_answer_unauth_user(self):

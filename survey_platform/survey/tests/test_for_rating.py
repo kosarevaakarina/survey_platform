@@ -12,7 +12,7 @@ class RatingCreateAPITestCase(UserCreate):
     def test_create_rating(self):
         self.create_user()
         self.create_new_survey()
-        response = self.client.post('/rating/create/', {
+        response = self.client.post('/survey/rating/create/', {
             "survey": self.new_survey.pk,
             "like": True,
             "dislike": False
@@ -27,7 +27,7 @@ class RatingCreateAPITestCase(UserCreate):
     def test_create_rating_fatal_one(self):
         self.create_user()
         self.create_new_survey()
-        response = self.client.post('/rating/create/', {
+        response = self.client.post('/survey/rating/create/', {
             "survey": self.new_survey.pk,
             "like": True,
             "dislike": True
@@ -38,7 +38,7 @@ class RatingCreateAPITestCase(UserCreate):
     def test_create_rating_fatal_two(self):
         self.create_user()
         self.create_new_survey()
-        response = self.client.post('/rating/create/', {
+        response = self.client.post('/survey/rating/create/', {
             "survey": self.new_survey.pk,
             "like": False,
             "dislike": False

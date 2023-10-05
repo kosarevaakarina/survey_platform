@@ -45,6 +45,12 @@ class Question(models.Model):
         """Строковое представление модели вопроса"""
         return self.question
 
+    def delete(self, using=None, keep_parents=False):
+        """При удалении опроса меняется его статус публичности"""
+        self.is_published = False
+        self.save()
+        logger.info(f"Вопрос {self.pk} удален")
+
 
 class Choice(models.Model):
     """Модель варианта ответа"""

@@ -42,6 +42,6 @@ class AnswerAdmin(admin.ModelAdmin):
     list_display = ('question', 'answer')
     fieldsets = (
         ('Вопрос', {'fields': ('question',)}),
-        ('Ответ', {'fields': ('choice',)}),
+        ('Ответ', {'fields': ('answer',)}),
         ('Автор', {'fields': ('user',)}),
     )

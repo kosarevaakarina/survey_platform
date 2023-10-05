@@ -9,18 +9,18 @@ logger = logging.getLogger("base")
 
 class SendMail:
     """Сервис по отправке сообщению пользователю при получении новой оценки опроса"""
-    def __init__(self, rating_id):
-        """Инициализация класса по ID оценки опроса"""
+    def __init__(self, rating_id: int):
+        """Инициализация класса"""
         self.rating_id = rating_id
         self.rating = None
 
-    def get_user(self):
+    def get_user(self) -> str:
         """Возвращает пользователя-автора опроса"""
         self.rating = Rating.objects.get(pk=self.rating_id)
         user = self.rating.survey.owner
         return user
 
-    def get_message(self):
+    def get_message(self) -> str:
         """Формирует сообщение для отправки пользователю"""
         like = self.rating.like
         dislike = self.rating.dislike
@@ -28,11 +28,10 @@ class SendMail:
             message = f'Пользователь {self.rating.owner} поставил лайк вашему опросу {self.rating.survey}'
         elif dislike is True:
             message = f'Пользователь {self.rating.owner} поставил дизлайк вашему опросу {self.rating.survey}'
-        else:
-            message = None
+
         return message
 
-    def send_email(self):
+    def send_email(self) -> None:
         """Отправка сообщения пользователю"""
         user = self.get_user()
         message = self.get_message()

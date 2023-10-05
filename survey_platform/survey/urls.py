@@ -1,7 +1,7 @@
 from django.urls import path
 
 from survey.views.views_of_answer import AnswerCreateAPIView, AnswerUpdateAPIView
-from survey.views.views_of_rating import RatingCreateAPIView
+from survey.views.views_of_rating import RatingCreateAPIView, RatingUpdateAPIView
 from survey.views.views_of_survey import SurveyListAPIView, SurveyRetrieveAPIView, SurveyCreateAPIView, \
     SurveyUpdateAPIView, SurveyDestroyAPIView, SurveyAndAnswerRetrieveAPIView
 
@@ -38,4 +38,5 @@ urlpatterns = [
 
     # rating
     path('rating/create/', RatingCreateAPIView.as_view(), name='rating_create'),
+    path('rating/update/<int:pk>/', RatingUpdateAPIView.as_view(), name='rating_update'),
 ]

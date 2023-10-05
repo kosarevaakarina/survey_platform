@@ -55,7 +55,6 @@ class SurveyUpdateAPIView(UpdateAPIView):
     model = Survey
     serializer_class = SurveySerializer
     queryset = Survey.objects.filter(is_published=True)
-
     permission_classes = [IsOwner]
 
 

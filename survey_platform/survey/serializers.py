@@ -53,10 +53,10 @@ class QuestionSerializer(serializers.ModelSerializer):
         """При создании вопроса проверяется количество вопросов в данном опросе"""
         survey = validated_data.get('survey')
         question = validated_data.get('question')
-        question_count = Question.objects.filter(survey=survey).count()
+        question_count = Question.objects.filter(survey=survey, is_published=True).count()
         if question_count > 10:
             raise serializers.ValidationError('Количество вопросов в опросе не может быть больше 10!')
-        if Question.objects.filter(survey=survey, question=question).exists():
+        if Question.objects.filter(survey=survey, question=question, is_published=True).exists():
             raise serializers.ValidationError(f'Вопрос {question} в этом опросе уже существует!')
 
         logger.info(f"Добавлен вопрос {question} к опросу {survey.title} (ID={survey.pk})")
@@ -67,7 +67,7 @@ class QuestionSerializer(serializers.ModelSerializer):
         """При обновлении вопроса проверяется наличие такого вопроса у этого опроса"""
         survey = validated_data.get('survey') if validated_data.get('survey') is not None else instance.survey
         question = validated_data.get('question') if validated_data.get('question') is not None else instance.question
-        if Question.objects.filter(survey=survey, question=question).exists():
+        if Question.objects.filter(survey=survey, question=question, is_published=True).exists():
             raise serializers.ValidationError(f'Вопрос {question} в этом опросе уже существует!')
 
         logger.info(f"Обновлен вопрос {question} к опросу {survey.title} (ID={survey.pk})")
@@ -91,11 +91,11 @@ class SurveySerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(f'Опрос {title} с описанием {description} уже существует!')
         survey = super().create(validated_data)
 
+        logger.info(f"Добавлен опрос {title}")
+
         # при создании опроса осуществляется рассылка всем пользователям
         send_mail = SendMessage(survey.id)
         send_mail.send_email()
-
-        logger.info(f"Добавлен опрос {title}")
 
         return survey
 
@@ -151,8 +151,6 @@ class AnswerSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         question = validated_data.get('question')
         answer = validated_data.get('answer')
-        if Answer.objects.filter(question=question).exists():
-            raise serializers.ValidationError('Ответ на этот вопрос уже существует! Вы можете его изменить')
 
         logger.info(f"Добавлен ответ {answer.choice} к вопросу {question.question} (ID={question.pk})")
 
@@ -161,8 +159,6 @@ class AnswerSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         question = validated_data.get('question') if validated_data.get('question') is not None else instance.question
         answer = validated_data.get('answer') if validated_data.get('answer') is not None else instance.answer
-        if Answer.objects.filter(question=question).exists():
-            raise serializers.ValidationError('Ответ на этот вопрос уже существует! Вы можете его изменить')
 
         logger.info(f"Обновлен ответ {answer.choice} к вопросу {question.question} (ID={question.pk})")
 
@@ -179,7 +175,6 @@ class QuestionAndCorrectChoiceSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_answer(obj):
-
         answer = Choice.objects.filter(question=obj, points=True)
         if answer.exists():
             return answer.first().choice
@@ -196,6 +191,8 @@ class SurveyAndAnswerQuestion(serializers.ModelSerializer):
 
 
 class RatingSerializer(serializers.ModelSerializer):
+    """Сериализатор для представления оценки опроса"""
+
     class Meta:
         model = Rating
         fields = ('survey', 'owner', 'like', 'dislike')
@@ -209,12 +206,14 @@ class RatingSerializer(serializers.ModelSerializer):
         # проверка, что не поставлены одновременно лайк и дизлайк
         if like is False and dislike is False:
             raise serializers.ValidationError('Необходимо поставить или лайк, или дизлайк')
-        # проверка, что лайк и дизлайк не поставлен повторно
-        if Rating.objects.filter(owner=attrs.get('owner'), survey=attrs.get('survey')).exists():
-            raise serializers.ValidationError('Вы уже оценивали этот опрос! Вы можете изменить оценку')
+
         return attrs
 
     def create(self, validated_data):
+        # проверка, что лайк и дизлайк не поставлен повторно
+        if Rating.objects.filter(owner=validated_data.get('owner'), survey=validated_data.get('survey')).exists():
+            raise serializers.ValidationError('Вы уже оценивали этот опрос! Вы можете изменить оценку')
+
         rating = super().create(validated_data)
 
         # при создании новой оценки опроса формируется и отправляется сообщение автору опроса
@@ -224,4 +223,3 @@ class RatingSerializer(serializers.ModelSerializer):
         logger.info(f"Пользователь {rating.owner} поставил оценку вопросу {rating.survey.title}")
 
         return rating
-

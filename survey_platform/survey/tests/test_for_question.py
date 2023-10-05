@@ -8,7 +8,7 @@ class QuestionCreateAPITestCase(UserCreate):
 
     def create_response(self):
         """Получение ответа при отправке POST запроса"""
-        response = self.client.post('/question/create/', {
+        response = self.client.post('/survey/question/create/', {
             "question": "Question",
             "survey": self.survey.pk
         })
@@ -32,7 +32,7 @@ class QuestionRetrieveAPITestCase(UserCreate):
 
     def retrieve_response(self, pk):
         """Получение ответа при отправке GET запроса"""
-        response = self.client.get(f'/question/{pk}/')
+        response = self.client.get(f'/survey/question/{pk}/')
         return response
 
     def test_retrieve_question_unauth_user(self):
@@ -62,7 +62,7 @@ class QuestionUpdateAPITestCase(UserCreate):
     """Тестирование обновления вопроса"""
     def update_response(self, pk):
         """Получение ответа при отправке PATCH запроса"""
-        response = self.client.patch(f'/question/update/{pk}/', {'question': 'Update question'})
+        response = self.client.patch(f'/survey/question/update/{pk}/', {'question': 'Update question'})
         return response
 
     def test_update_question_unauth_user(self):
@@ -83,7 +83,7 @@ class QuestionDeleteAPITestCase(UserCreate):
     """Тестирование удаления вопроса"""
     def delete_response(self, pk):
         """Получение ответа при отправке DELETE запроса"""
-        response = self.client.delete(f'/question/delete/{pk}/')
+        response = self.client.delete(f'/survey/question/delete/{pk}/')
         return response
 
     def test_delete_question_unauth_user(self):
