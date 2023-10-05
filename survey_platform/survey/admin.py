@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from survey.models import Survey, Question, Choice, Answer
+from survey.models import Survey, Question, Choice, Answer, CheckSurvey
 
 
 @admin.register(Survey)
@@ -17,10 +17,9 @@ class SurveyAdmin(admin.ModelAdmin):
 
 @admin.register(Question)
 class QuestionAdmin(admin.ModelAdmin):
-    list_display = ('survey', 'title')
+    list_display = ('survey', 'question')
     fieldsets = (
-        (None, {'fields': ('title',)}),
-        ('Вопрос', {'fields': ('question',)}),
+        (None, {'fields': ('question',)}),
         ('Опрос', {'fields': ('survey',)}),
         ('Публикация', {'fields': ('is_published',)}),
     )
@@ -44,3 +43,8 @@ class AnswerAdmin(admin.ModelAdmin):
         ('Автор', {'fields': ('user',)}),
 
     )
+
+
+@admin.register(CheckSurvey)
+class CheckSurveyAdmin(admin.ModelAdmin):
+    list_display = ('question', 'answer')
