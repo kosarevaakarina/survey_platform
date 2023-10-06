@@ -28,3 +28,8 @@ class UserPanelAPITestCase(UserCreate):
         self.save_owner_for_survey()
         response = self.client.get(f'/users/check/{self.user.pk}/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_retrieve_user_correct_answer_percent(self):
+        self.save_owner_for_survey()
+        response = self.client.get(f'/users/correct_answer_percent/{self.user.pk}/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
