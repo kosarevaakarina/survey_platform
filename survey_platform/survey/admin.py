@@ -33,6 +33,7 @@ class ChoiceAdmin(admin.ModelAdmin):
     fieldsets = (
         ('Вопрос', {'fields': ('question',)}),
         ('Вариант ответа', {'fields': ('choice',)}),
+        ('Корректность', {'fields': ('points',)}),
     )
 
 
@@ -42,6 +43,6 @@ class AnswerAdmin(admin.ModelAdmin):
     list_display = ('question', 'answer')
     fieldsets = (
         ('Вопрос', {'fields': ('question',)}),
-        ('Ответ', {'fields': ('choice',)}),
+        ('Ответ', {'fields': ('answer',)}),
         ('Автор', {'fields': ('user',)}),
     )

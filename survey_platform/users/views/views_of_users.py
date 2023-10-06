@@ -2,8 +2,7 @@ from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveAPIView,
 from rest_framework.permissions import AllowAny, IsAdminUser
 from users.models import User
 from users.permissions import IsUser
-from users.serializers import UserRegisterSerializer, UserSerializer, UserCreateSurveySerializer, \
-    UserCreateRatingSerializer, UserCheckSurveySerializer
+from users.serializers import UserRegisterSerializer, UserSerializer
 
 
 class UserCreateAPIView(CreateAPIView):
@@ -43,4 +42,3 @@ class UserDestroyAPIView(DestroyAPIView):
     serializer_class = UserSerializer
     queryset = User.objects.all()
     permission_classes = [IsUser]
-

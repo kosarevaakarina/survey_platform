@@ -31,7 +31,7 @@ class SendMessage:
     def get_message(self) -> str:
         """Формирует сообщение для отправки пользователю"""
         title, description = self.get_survey()
-        message = f'Добавлен опрос {title}. Описание рассылки: {description}'
+        message = f'Добавлен опрос {title}. Описание опроса: {description}'
         return message
 
     def send_email(self) -> None:

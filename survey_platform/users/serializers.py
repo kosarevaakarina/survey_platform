@@ -1,7 +1,7 @@
 import logging
 from rest_framework import serializers
 
-from survey.models import CheckSurvey
+from survey.models import CheckSurvey, Answer, Choice
 from survey.serializers import SurveyListSerializer, RatingSerializer
 from users.models import User
 
@@ -16,7 +16,6 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('email', 'first_name', 'last_name', 'is_active')
 
     def update(self, instance, validated_data):
-
         logger.info(f"Пользователь {instance.email} (ID={instance.pk}) обновил информацию")
 
         super().update(instance, validated_data)
@@ -57,6 +56,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
 
 class UserCreateSurveySerializer(serializers.ModelSerializer):
+    """Сериализатор для просмотра созданных пользователем опросов"""
     survey = SurveyListSerializer(many=True, read_only=True, source='survey_set')
 
     class Meta:
@@ -65,6 +65,7 @@ class UserCreateSurveySerializer(serializers.ModelSerializer):
 
 
 class UserCreateRatingSerializer(serializers.ModelSerializer):
+    """Представление для просмотра проставленных оценок пользователем опросам"""
     rating = RatingSerializer(many=True, read_only=True, source='rating_set')
 
     class Meta:
@@ -79,8 +80,32 @@ class CheckSurveySerializer(serializers.ModelSerializer):
 
 
 class UserCheckSurveySerializer(serializers.ModelSerializer):
+    """Сериализатор для списка просмотренных пользователем опросов"""
     check = CheckSurveySerializer(many=True, read_only=True, source='checksurvey_set')
 
     class Meta:
         model = User
         fields = ('email', 'check')
+
+
+class UserPointsSerializer(serializers.ModelSerializer):
+    """Сериализатор для вывода процента правильных ответов пользователя"""
+    percent_correct_answer = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ('email', 'percent_correct_answer')
+
+    @staticmethod
+    def get_percent_correct_answer(obj):
+        """Возвращает количество правильных ответов в процентах"""
+        if Answer.objects.filter(user=obj).exists():
+            answer_count = Answer.objects.filter(user=obj).count()
+            correct_choices = Choice.objects.filter(points=True)
+            count = 0
+            for correct_choice in correct_choices:
+                if Answer.objects.filter(answer=correct_choice, user=obj).exists():
+                    count += 1
+
+            return round(count * 100 / answer_count, 1)
+        return None

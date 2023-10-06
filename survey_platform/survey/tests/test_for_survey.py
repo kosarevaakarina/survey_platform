@@ -8,7 +8,7 @@ class SurveyCreateAPITestCase(UserCreate):
 
     def create_response(self):
         """Получение ответа при отправке POST запроса"""
-        response = self.client.post('/create/', {
+        response = self.client.post('/survey/create/', {
             "title": "Test title survey",
             "description": "Test description survey"
         })
@@ -29,9 +29,10 @@ class SurveyCreateAPITestCase(UserCreate):
 
 class SurveyListAPITestCase(UserCreate):
     """Тестирование просмотра опросов"""
+
     def get_response(self):
         """Получение ответа при отправке GET запроса"""
-        response = self.client.get('', )
+        response = self.client.get('/survey/', )
         return response
 
     def test_get_survey_unauth_user(self):
@@ -59,7 +60,7 @@ class SurveyRetrieveAPITestCase(UserCreate):
 
     def retrieve_response(self, pk):
         """Получение ответа при отправке GET запроса"""
-        response = self.client.get(f'/{pk}/')
+        response = self.client.get(f'/survey/{pk}/')
         return response
 
     def test_retrieve_survey_unauth_user(self):
@@ -77,9 +78,10 @@ class SurveyRetrieveAPITestCase(UserCreate):
 
 class SurveyUpdateAPITestCase(UserCreate):
     """Тестирование обновления опроса"""
+
     def update_response(self, pk):
         """Получение ответа при отправке PATCH запроса"""
-        response = self.client.patch(f'/update/{pk}/', {'title': 'Update title'})
+        response = self.client.patch(f'/survey/update/{pk}/', {'title': 'Update title'})
         return response
 
     def test_update_survey_unauth_user(self):
@@ -98,9 +100,10 @@ class SurveyUpdateAPITestCase(UserCreate):
 
 class SurveyDeleteAPITestCase(UserCreate):
     """Тестирование удаления опроса"""
+
     def delete_response(self, pk):
         """Получение ответа при отправке DELETE запроса"""
-        response = self.client.delete(f'/delete/{pk}/')
+        response = self.client.delete(f'/survey/delete/{pk}/')
         return response
 
     def test_delete_survey_unauth_user(self):
@@ -118,7 +121,7 @@ class SurveyDeleteAPITestCase(UserCreate):
 
 class SurveyAndCorrectChoiceRetrieveAPIView(UserCreate):
     def response(self, pk):
-        response = self.client.get(f'/survey/answer/{pk}/')
+        response = self.client.get(f'/survey/survey/answer/{pk}/')
         return response
 
     def test_get_survey_and_correct_answer(self):
