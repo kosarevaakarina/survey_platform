@@ -1,8 +1,8 @@
 import logging
 from rest_framework import serializers
 
-from survey.models import CheckSurvey
-from survey.serializers import SurveyListSerializer, RatingSerializer
+from survey.models import CheckSurvey, Answer, Choice
+from survey.serializers import SurveyListSerializer, RatingSerializer, AnswerSerializer
 from users.models import User
 
 logger = logging.getLogger("base")
@@ -16,7 +16,6 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('email', 'first_name', 'last_name', 'is_active')
 
     def update(self, instance, validated_data):
-
         logger.info(f"Пользователь {instance.email} (ID={instance.pk}) обновил информацию")
 
         super().update(instance, validated_data)
@@ -87,3 +86,24 @@ class UserCheckSurveySerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('email', 'check')
+
+
+class UserPointsSerializer(serializers.ModelSerializer):
+    """Сериализатор для вывода процента правильных ответов пользователя"""
+    percent_correct_answer = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ('email', 'percent_correct_answer')
+
+    @staticmethod
+    def get_percent_points(obj):
+        """Возвращает количество правильных ответов в процентах"""
+        answer_count = Answer.objects.filter(user=obj).count()
+        correct_choices = Choice.objects.filter(points=True)
+        count = 0
+        for correct_choice in correct_choices:
+            if Answer.objects.filter(answer=correct_choice, user=obj).exists():
+                count += 1
+
+        return round(count * 100 / answer_count, 1)

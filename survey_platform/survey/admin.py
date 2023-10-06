@@ -33,6 +33,7 @@ class ChoiceAdmin(admin.ModelAdmin):
     fieldsets = (
         ('Вопрос', {'fields': ('question',)}),
         ('Вариант ответа', {'fields': ('choice',)}),
+        ('Корректность', {'fields': ('points',)}),
     )
 
 
