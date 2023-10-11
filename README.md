@@ -64,3 +64,5 @@ drf_social_oauth2.
     * Использовать токен доступа в качестве параметра токена в конечной точке /convert-token.
 
 ### [Инструкция по запуску проекта локально](https://github.com/kosarevaakarina/survey_platform/blob/main/LOCAL.md)
+### [Инструкция по запуску проекта в Docker](https://github.com/kosarevaakarina/survey_platform/blob/main/DOCKER.md)
+
