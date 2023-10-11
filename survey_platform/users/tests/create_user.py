@@ -35,15 +35,7 @@ class UserCreate(APITestCase):
         self.user = User(**user_data)
         self.user.set_password('123Qaz')
         self.user.save()
-        response = self.client.post(
-            '/users/token/',
-            {
-                'email': self.email,
-                'password': '123Qaz'
-            }
-        )
-        self.access_token = response.json().get('access')
-        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
+        self.client.force_authenticate(user=self.user)
 
     def save_owner_for_survey(self):
         """Привязка пользователя к опросу"""
