@@ -25,6 +25,11 @@ _Для создания администратора запустить ком�
 ```
 python3 manage.py createsuperuser
 ```
+_Для добавления тестовых фикстур:_:
+```
+python3 manage.py loaddata users.json
+python3 manage.py loaddata survey.json
+```
 _Для запуска приложения:_
 
 ```
@@ -32,16 +37,6 @@ python3 manage.py runserver
 ```
 
 _Для тестирования проекта необходимо_:
-В config/settings.py внести изменения, так как при тестировании авторизация осуществляется с помощью JWT:
-```
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
-        'drf_social_oauth2.authentication.SocialAuthentication',
-    ),
-}
-```
 _Запустить команду:_
 
 ```
