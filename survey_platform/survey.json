@@ -1,0 +1,288 @@
+[
+  {
+    "model": "survey.survey",
+    "pk": 1,
+    "fields": {
+      "create_at": "2023-10-11T08:40:11.256Z",
+      "title": "Тестирование по математике",
+      "description": "Необходимо решить легкие математические задачки!",
+      "owner": 1,
+      "is_published": true
+    }
+  },
+  {
+    "model": "survey.question",
+    "pk": 1,
+    "fields": {
+      "question": "2+2=?",
+      "survey": 1,
+      "is_published": true
+    }
+  },
+  {
+    "model": "survey.question",
+    "pk": 2,
+    "fields": {
+      "question": "2*13=?",
+      "survey": 1,
+      "is_published": true
+    }
+  },
+  {
+    "model": "survey.question",
+    "pk": 3,
+    "fields": {
+      "question": "15/5=?",
+      "survey": 1,
+      "is_published": true
+    }
+  },
+  {
+    "model": "survey.question",
+    "pk": 4,
+    "fields": {
+      "question": "23+13=?",
+      "survey": 1,
+      "is_published": true
+    }
+  },
+  {
+    "model": "survey.question",
+    "pk": 5,
+    "fields": {
+      "question": "100/25=?",
+      "survey": 1,
+      "is_published": true
+    }
+  },
+  {
+    "model": "survey.choice",
+    "pk": 1,
+    "fields": {
+      "question": 1,
+      "choice": "1",
+      "points": false
+    }
+  },
+  {
+    "model": "survey.choice",
+    "pk": 2,
+    "fields": {
+      "question": 1,
+      "choice": "4",
+      "points": true
+    }
+  },
+  {
+    "model": "survey.choice",
+    "pk": 3,
+    "fields": {
+      "question": 1,
+      "choice": "85",
+      "points": false
+    }
+  },
+  {
+    "model": "survey.choice",
+    "pk": 4,
+    "fields": {
+      "question": 1,
+      "choice": "13",
+      "points": false
+    }
+  },
+  {
+    "model": "survey.choice",
+    "pk": 5,
+    "fields": {
+      "question": 2,
+      "choice": "26",
+      "points": true
+    }
+  },
+  {
+    "model": "survey.choice",
+    "pk": 6,
+    "fields": {
+      "question": 2,
+      "choice": "112",
+      "points": false
+    }
+  },
+  {
+    "model": "survey.choice",
+    "pk": 7,
+    "fields": {
+      "question": 2,
+      "choice": "156",
+      "points": false
+    }
+  },
+  {
+    "model": "survey.choice",
+    "pk": 8,
+    "fields": {
+      "question": 2,
+      "choice": "0",
+      "points": false
+    }
+  },
+  {
+    "model": "survey.choice",
+    "pk": 9,
+    "fields": {
+      "question": 3,
+      "choice": "5",
+      "points": false
+    }
+  },
+  {
+    "model": "survey.choice",
+    "pk": 10,
+    "fields": {
+      "question": 3,
+      "choice": "987",
+      "points": false
+    }
+  },
+  {
+    "model": "survey.choice",
+    "pk": 11,
+    "fields": {
+      "question": 3,
+      "choice": "3",
+      "points": true
+    }
+  },
+  {
+    "model": "survey.choice",
+    "pk": 12,
+    "fields": {
+      "question": 3,
+      "choice": "123",
+      "points": false
+    }
+  },
+  {
+    "model": "survey.choice",
+    "pk": 13,
+    "fields": {
+      "question": 4,
+      "choice": "36",
+      "points": true
+    }
+  },
+  {
+    "model": "survey.choice",
+    "pk": 14,
+    "fields": {
+      "question": 4,
+      "choice": "0",
+      "points": false
+    }
+  },
+  {
+    "model": "survey.choice",
+    "pk": 16,
+    "fields": {
+      "question": 4,
+      "choice": "100",
+      "points": false
+    }
+  },
+  {
+    "model": "survey.choice",
+    "pk": 17,
+    "fields": {
+      "question": 4,
+      "choice": "456",
+      "points": false
+    }
+  },
+  {
+    "model": "survey.choice",
+    "pk": 18,
+    "fields": {
+      "question": 5,
+      "choice": "4",
+      "points": true
+    }
+  },
+  {
+    "model": "survey.choice",
+    "pk": 19,
+    "fields": {
+      "question": 5,
+      "choice": "25",
+      "points": false
+    }
+  },
+  {
+    "model": "survey.choice",
+    "pk": 20,
+    "fields": {
+      "question": 5,
+      "choice": "89",
+      "points": false
+    }
+  },
+  {
+    "model": "survey.choice",
+    "pk": 21,
+    "fields": {
+      "question": 5,
+      "choice": "34",
+      "points": false
+    }
+  },
+  {
+    "model": "survey.answer",
+    "pk": 1,
+    "fields": {
+      "create_at": "2023-10-11T08:44:00.281Z",
+      "user": 1,
+      "question": 1,
+      "answer": 2
+    }
+  },
+  {
+    "model": "survey.answer",
+    "pk": 2,
+    "fields": {
+      "create_at": "2023-10-11T08:44:10.619Z",
+      "user": 1,
+      "question": 2,
+      "answer": 6
+    }
+  },
+  {
+    "model": "survey.answer",
+    "pk": 3,
+    "fields": {
+      "create_at": "2023-10-11T08:44:16.853Z",
+      "user": 1,
+      "question": 3,
+      "answer": 11
+    }
+  },
+  {
+    "model": "survey.answer",
+    "pk": 4,
+    "fields": {
+      "create_at": "2023-10-11T08:44:23.222Z",
+      "user": 1,
+      "question": 4,
+      "answer": 14
+    }
+  },
+  {
+    "model": "survey.answer",
+    "pk": 5,
+    "fields": {
+      "create_at": "2023-10-11T08:44:30.026Z",
+      "user": 1,
+      "question": 5,
+      "answer": 18
+    }
+  }
+]

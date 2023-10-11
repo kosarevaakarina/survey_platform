@@ -10,3 +10,4 @@ flake8==6.1.0
 djangorestframework-simplejwt==5.3.0
 coverage==7.3.1
 django-cors-headers==4.2.0
+gunicorn==21.2.0
